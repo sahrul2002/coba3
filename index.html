@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pakar Vespa Excel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase CDN for GitHub Pages compatibility -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Expert Login Modal -->
+    <div id="expert-login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login Pakar</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="expert-login-form">
+                <div class="input-group">
+                    <label for="expert-username">Username</label>
+                    <input type="text" id="expert-username" placeholder="Masukkan username pakar" required>
+                </div>
+                <div class="input-group">
+                    <label for="expert-password">Password</label>
+                    <input type="password" id="expert-password" placeholder="Masukkan password pakar" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" id="cancel-expert-login">Batal</button>
+                    <button type="submit" class="btn-primary" id="submit-expert-login">Masuk</button>
+                </div>
+                <p class="login-info">
+                    <i class="fas fa-info-circle"></i> 
+                    Username: "admin", Password: "admin"
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <img src="https://images.pexels.com/photos/13596219/pexels-photo-13596219.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Vespa Excel" class="sidebar-logo">
+                <h3>Sistem Pakar<br>Vespa Excel</h3>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="user-role">Pengguna</span>
+            </div>
+            <ul class="sidebar-menu">
+                <li data-page="beranda" class="active">
+                    <i class="fas fa-home"></i> Beranda
+                </li>
+                <li data-page="gejala">
+                    <i class="fas fa-list-check"></i> Kode Gejala
+                </li>
+                <li data-page="kerusakan">
+                    <i class="fas fa-wrench"></i> Kode Kerusakan
+                </li>
+                <li data-page="diagnosa">
+                    <i class="fas fa-stethoscope"></i> Diagnosa
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <button id="expert-login-btn" class="expert-login-button">
+                    <i class="fas fa-user-cog"></i> Login Pakar
+                </button>
+                <button id="logout-btn" class="expert-only" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i> Keluar
+                </button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="beranda-page" class="page active">
+                <!-- Combined Welcome Header with Page Title -->
+                <div class="welcome-header">
+                    <div class="welcome-header-content">
+                        <h2><i class="fas fa-home"></i> Selamat Datang di Sistem Pakar Vespa Excel</h2>
+                        <p>Sistem ini dibuat untuk membantu mendiagnosis kerusakan pada motor Vespa Excel berdasarkan gejala-gejala yang diamati. Gunakan menu navigasi untuk mengakses fitur-fitur yang tersedia.</p>
+                    </div>
+                </div>
+                
+                <!-- Dashboard Stats moved to top -->
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-wrench"></i></div>
+                        <div class="stat-content">
+                            <h3 id="total-kerusakan">15</h3>
+                            <p>Jenis Kerusakan</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-list-check"></i></div>
+                        <div class="stat-content">
+                            <h3 id="total-gejala">36</h3>
+                            <p>Gejala Terdaftar</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-database"></i></div>
+                        <div class="stat-content">
+                            <h3 id="total-rules">76</h3>
+                            <p>Aturan Basis Pengetahuan</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-container">
+                    <div class="info-cards">
+                        <div class="info-card">
+                            <div class="card-icon"><i class="fas fa-motorcycle"></i></div>
+                            <div class="card-content">
+                                <h4>Tentang Vespa Excel</h4>
+                                <p>Vespa Excel adalah salah satu varian motor Vespa yang diproduksi oleh Piaggio. Model ini terkenal di Indonesia dan memiliki karakteristik unik dengan mesin 150cc yang handal. Vespa Excel merupakan evolusi dari Vespa Super yang dilengkapi dengan berbagai peningkatan teknologi dan kenyamanan berkendara.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card">
+                            <div class="card-icon"><i class="fas fa-brain"></i></div>
+                            <div class="card-content">
+                                <h4>Sistem Pakar</h4>
+                                <p>Sistem pakar adalah sistem komputer yang dirancang untuk meniru kemampuan pemecahan masalah dari seorang pakar manusia. Sistem ini menggunakan pengetahuan, fakta, dan teknik penalaran dalam memecahkan masalah yang biasanya memerlukan keahlian seorang pakar.</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="card-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="card-content">
+                                <h4>Metode Certainty Factor (CF)</h4>
+                                <p>Certainty Factor adalah metode untuk mengelola ketidakpastian dalam sistem berbasis aturan. Metode ini menggabungkan ukuran kepercayaan dan ketidakpercayaan dalam sebuah bilangan tunggal, dengan mempertimbangkan tingkat keyakinan pakar dan pengguna dalam proses diagnosis.</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="card-icon"><i class="fas fa-user-md"></i></div>
+                            <div class="card-content">
+                                <h4>Informasi Mekanik</h4>
+                                <p>Sistem ini dikembangkan berdasarkan pengetahuan dan pengalaman dari mekanik ahli Vespa Excel dengan pengalaman lebih dari 15 tahun. Data dan aturan yang digunakan telah divalidasi oleh bengkel-bengkel Vespa terpercaya untuk memastikan akurasi diagnosis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="gejala-page" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-list-check"></i> Kode Gejala</h2>
+                </div>
+                <div class="content-container">
+                    <div class="search-info-container">
+                        <div class="search-info-description">
+                            <p>Daftar gejala yang dapat digunakan untuk mendiagnosa kerusakan pada Vespa Excel. Setiap gejala memiliki kode unik dan deskripsi yang jelas untuk memudahkan proses diagnosa.</p>
+                        </div>
+                        <div class="search-add-container">
+                            <div class="search-container">
+                                <input type="text" id="search-gejala" placeholder="Cari gejala...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="expert-actions expert-only" id="gejala-actions">
+                                <button id="tambah-gejala-btn" class="btn-primary">
+                                    <i class="fas fa-plus"></i> Tambah Gejala
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-header">
+                            <div class="table-header-cell">Kode Gejala</div>
+                            <div class="table-header-cell">Deskripsi Gejala</div>
+                            <div class="table-header-cell expert-only">Aksi</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        <table id="gejala-table">
+                            <tbody id="gejala-list">
+                                <!-- Gejala list will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="gejala-form-container" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="gejala-form-title">Tambah Gejala Baru</h3>
+                            <span class="close-modal">&times;</span>
+                        </div>
+                        <form id="gejala-form">
+                            <div class="input-group">
+                                <label for="gejala-kode">Kode Gejala</label>
+                                <input type="text" id="gejala-kode" placeholder="Contoh: G037" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="gejala-deskripsi">Deskripsi Gejala</label>
+                                <textarea id="gejala-deskripsi" placeholder="Masukkan deskripsi gejala" required></textarea>
+                            </div>
+                            <div class="form-buttons">
+                                <button type="button" class="btn-secondary" id="batal-gejala">Batal</button>
+                                <button type="submit" class="btn-primary" id="simpan-gejala">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="kerusakan-page" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-wrench"></i> Kode Kerusakan</h2>
+                </div>
+                <div class="content-container">
+                    <div class="search-info-container">
+                        <div class="search-info-description">
+                            <p>Daftar kerusakan yang mungkin terjadi pada Vespa Excel. Setiap kerusakan memiliki kode unik dan deskripsi yang membantu mengidentifikasi masalah pada kendaraan.</p>
+                        </div>
+                        <div class="search-add-container">
+                            <div class="search-container">
+                                <input type="text" id="search-kerusakan" placeholder="Cari kerusakan...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="expert-actions expert-only" id="kerusakan-actions">
+                                <button id="tambah-kerusakan-btn" class="btn-primary">
+                                    <i class="fas fa-plus"></i> Tambah Kerusakan
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-header">
+                            <div class="table-header-cell">Kode Kerusakan</div>
+                            <div class="table-header-cell">Deskripsi Kerusakan</div>
+                            <div class="table-header-cell expert-only">Aksi</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        <table id="kerusakan-table">
+                            <tbody id="kerusakan-list">
+                                <!-- Kerusakan list will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="kerusakan-form-container" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 id="kerusakan-form-title">Tambah Kerusakan Baru</h3>
+                            <span class="close-modal">&times;</span>
+                        </div>
+                        <form id="kerusakan-form">
+                            <div class="input-group">
+                                <label for="kerusakan-kode">Kode Kerusakan</label>
+                                <input type="text" id="kerusakan-kode" placeholder="Contoh: K016" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="kerusakan-deskripsi">Deskripsi Kerusakan</label>
+                                <textarea id="kerusakan-deskripsi" placeholder="Masukkan deskripsi kerusakan" required></textarea>
+                            </div>
+                            <div class="form-buttons">
+                                <button type="button" class="btn-secondary" id="batal-kerusakan">Batal</button>
+                                <button type="submit" class="btn-primary" id="simpan-kerusakan">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div id="diagnosa-page" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-stethoscope"></i> Diagnosa Kerusakan</h2>
+                </div>
+                <div class="content-container">
+                    <div class="search-info-container">
+                        <div class="search-info-description">
+                            <p>Pilih gejala-gejala yang Anda alami pada Vespa Excel Anda dan tentukan tingkat keyakinan untuk setiap gejala. Sistem akan menganalisis input Anda dan memberikan diagnosa kerusakan yang mungkin terjadi.</p>
+                        </div>
+                        <div class="search-container">
+                            <input type="text" id="search-diagnosa-gejala" placeholder="Cari gejala...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="table-header">
+                            <div class="table-header-cell" style="width: 10%">Pilih</div>
+                            <div class="table-header-cell" style="width: 15%">Kode</div>
+                            <div class="table-header-cell" style="width: 50%">Gejala</div>
+                            <div class="table-header-cell" style="width: 25%">Tingkat Keyakinan</div>
+                        </div>
+                    </div>
+                    <div class="table-body">
+                        <table id="diagnosa-gejala-table">
+                            <tbody id="diagnosa-gejala-list">
+                                <!-- Gejala list for diagnosa will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="diagnosa-actions">
+                        <button id="reset-diagnosa" class="btn-secondary">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                        <button id="proses-diagnosa" class="btn-primary">
+                            <i class="fas fa-calculator"></i> Proses Diagnosa
+                        </button>
+                    </div>
+
+                    <div id="hasil-diagnosa" class="hasil-diagnosa" style="display: none;">
+                        <h3>Hasil Diagnosa</h3>
+                        <div id="hasil-diagnosa-content">
+                            <!-- Hasil diagnosa will be shown here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="rule-form-container" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Atur Basis Pengetahuan</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="rule-form">
+                <div class="input-group">
+                    <label for="rule-kerusakan">Kerusakan</label>
+                    <select id="rule-kerusakan" required>
+                        <!-- Kerusakan options will be populated here -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="rule-gejala">Gejala</label>
+                    <select id="rule-gejala" required>
+                        <!-- Gejala options will be populated here -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="rule-mb">Nilai MB (0-1)</label>
+                    <input type="number" id="rule-mb" min="0" max="1" step="0.1" required>
+                </div>
+                <div class="input-group">
+                    <label for="rule-md">Nilai MD (0-1)</label>
+                    <input type="number" id="rule-md" min="0" max="1" step="0.1" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" id="batal-rule">Batal</button>
+                    <button type="submit" class="btn-primary" id="simpan-rule">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Konfirmasi</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="confirmation-message">
+                <p id="confirmation-text"></p>
+            </div>
+            <div class="form-buttons">
+                <button type="button" class="btn-secondary" id="cancel-confirm">Batal</button>
+                <button type="button" class="btn-danger" id="confirm-action">Hapus</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Debug info for GitHub Pages -->
+    <script>
+        console.log('Page loaded, checking services...');
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                console.log('Services available:', {
+                    authService: typeof window.authService !== 'undefined',
+                    dataService: typeof window.dataService !== 'undefined',
+                    uiService: typeof window.uiService !== 'undefined',
+                    expertService: typeof window.expertService !== 'undefined',
+                    diagnosaService: typeof window.diagnosaService !== 'undefined'
+                });
+            }, 1000);
+        });
+    </script>
+
+    <!-- Scripts -->
+    <script src="js/supabase.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/expert.js"></script>
+    <script src="js/diagnosa.js"></script>
+    <script src="js/main.js"></script>
+    
+    <!-- Fallback script for debugging -->
+    <script>
+        // Debug information
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                console.log('=== DEBUG INFO ===');
+                console.log('Services available:', {
+                    authService: typeof window.authService !== 'undefined',
+                    dataService: typeof window.dataService !== 'undefined',
+                    uiService: typeof window.uiService !== 'undefined',
+                    expertService: typeof window.expertService !== 'undefined',
+                    diagnosaService: typeof window.diagnosaService !== 'undefined'
+                });
+                
+                if (typeof window.dataService !== 'undefined') {
+                    console.log('Data counts:', {
+                        kerusakan: window.dataService.getAllKerusakan().length,
+                        gejala: window.dataService.getAllGejala().length,
+                        rules: window.dataService.getAllRules().length
+                    });
+                }
+                console.log('=== END DEBUG ===');
+            }, 2000);
+        });
+        
+        // Error handler
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+        });
+    </script>
+</body>
+</html>
